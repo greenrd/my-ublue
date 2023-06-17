@@ -11,7 +11,7 @@ base-image: ghcr.io/ublue-os/kinoite-main
 # builds with the tag (all uBlue images do this).
 fedora-version: 38
 # This description will be visible in the container metadata.
-description: A starting point for further customization of uBlue images. Make your own! https://ublue.it/making-your-own/
+description: My customised uBlue distro, incorporating development tools I use
 # These scripts will be executed during the container build.
 # Place scripts in the "scripts/" dir and put the corresponding filenames here.
 # Any files that aren't listed here won't be executed automatically, which

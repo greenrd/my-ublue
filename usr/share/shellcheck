@@ -1,0 +1,11 @@
+#! /bin/bash
+
+jump_to_top () {
+    if type flatpak-spawn 2>/dev/null; then
+        exec flatpak-spawn --forward-fd=1 --host --watch-bus "$@"
+    else
+        exec "$@"
+    fi
+}
+
+jump_to_top distrobox enter fedora -- shellcheck "$@"
