@@ -48,6 +48,8 @@ rpm:
   # performed via rpm-ostree during the image build, and will be pre-installed
   # at the "system level" in the final image.
   install:
+    # Needed for generating the yafti config file
+    - dhall-json
     # Needed for yafti (the first boot installer). Remove if you're not using yafti.
     - python3-pip
     # GNOME's GTK4 theme, Libadwaita. Already included in Silverblue, but not
@@ -55,9 +57,6 @@ rpm:
     # apps and binaries require it, so it's a good idea to always include it
     # if you ever download or compile any custom software on your machine.
     - libadwaita
-    # Add your own below:
-    # Example:
-    # - tilix
   # These RPMs will be removed from the system image. This step happens during
   # image build, BEFORE installing custom RPMs (from the "rpm.install" category).
   remove:
