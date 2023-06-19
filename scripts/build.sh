@@ -78,6 +78,8 @@ if [[ "${YAFTI_ENABLED}" == "true" ]]; then
     # Create symlink to our profile script, which creates the per-user "autorun yafti" links.
     mkdir -p "$(dirname "${FIRSTBOOT_LINK}")"
     ln -s "${FIRSTBOOT_DATA}/launcher/login-profile.sh" "${FIRSTBOOT_LINK}"
+
+    dhall-to-yaml --omit-empty --explain < /tmp/yafti.dhall > /usr/share/ublue-os/firstboot/yafti.yml
 else
     echo "-- firstboot: Removing all \"firstboot\" components --"
     # Removes the script symlink that creates the per-user autostart symlinks.

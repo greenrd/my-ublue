@@ -34,6 +34,8 @@ COPY --from=docker.io/mikefarah/yq /usr/bin/yq /usr/bin/yq
 # Copy the build script and all custom scripts.
 COPY scripts /tmp/scripts
 
+COPY yafti.dhall /tmp
+
 # Run the build script, then clean up temp files and finalize container build.
 RUN chmod +x /tmp/scripts/build.sh && \
         /tmp/scripts/build.sh && \
