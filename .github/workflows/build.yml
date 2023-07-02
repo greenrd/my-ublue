@@ -38,8 +38,6 @@ env:
 
 jobs:
   push-ghcr:
-    # Only deploys the branch named "live". Ignores all other branches, to allow
-    # having "development" branches without interfering with GHCR image uploads.
     name: Build and push image
     runs-on: ubuntu-22.04
     permissions:
@@ -150,7 +148,6 @@ jobs:
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
         id: push
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/live'
         env:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ github.token }}
@@ -185,6 +182,5 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
 
       - name: Echo outputs
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/live'
         run: |
           echo "${{ toJSON(steps.push.outputs) }}"
