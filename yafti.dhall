@@ -464,7 +464,7 @@ in  { title = "Welcome to my-uBlue"
                           "We have detected that you don't have a Fedora Distrobox set up. We will now create one."
                       , actions =
                         [ { run =
-                              "distrobox create --image quay.io/fedora/fedora:38 --name fedora"
+                              "distrobox assemble create --file /usr/share/ublue-os/firstboot/distrobox.ini"
                           }
                         ]
                       }
@@ -492,9 +492,6 @@ in  { title = "Welcome to my-uBlue"
                                     , "chmod +x " ++ shellcheck
                                     ]
                                 )
-                          }
-                        , { run =
-                              "distrobox enter fedora -- sudo dnf install -y shellcheck"
                           }
                         , { run =
                               seq
