@@ -247,6 +247,16 @@ let shellcheck = `bin directory` ++ "/shellcheck"
 let `scope directory` =
       "~/.config/systemd/user/app-" ++ `vscode variant` ++ "-.scope.d"
 
+let `firstboot directory` = "/usr/share/ublue-os/firstboot"
+
+let `with temp file` =
+      \(cmds : Text -> List Text) ->
+        let `temp var` = "temp_file"
+
+        in    [ `temp var` ++ "=\$(mktemp --tmpdir=/tmp)" ]
+            # cmds `temp var`
+            # [ "rm \$" ++ `temp var` ]
+
 in  { title = "Welcome to my-uBlue"
     , properties.mode = "run-on-change"
     , screens =
@@ -464,7 +474,25 @@ in  { title = "Welcome to my-uBlue"
                           "We have detected that you don't have a Fedora Distrobox set up. We will now create one."
                       , actions =
                         [ { run =
-                              "distrobox assemble create --file /usr/share/ublue-os/firstboot/distrobox.ini"
+                              seq
+                                ( NonEmpty/make
+                                    Text
+                                    (     "distrobox assemble create --file "
+                                      ++  `firstboot directory`
+                                      ++  "/distrobox.ini"
+                                    )
+                                    ( `with temp file`
+                                        ( \(`temp var` : Text) ->
+                                            [     "cp "
+                                              ++  `firstboot directory`
+                                              ++  "/setup-emacs.el \$"
+                                              ++  `temp var`
+                                            ,     "distrobox enter fedora -- emacs --fg-daemon --no-desktop --load \$"
+                                              ++  `temp var`
+                                            ]
+                                        )
+                                    )
+                                )
                           }
                         ]
                       }

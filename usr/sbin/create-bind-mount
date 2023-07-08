@@ -1,0 +1,10 @@
+#! /bin/bash
+
+bind_mount="/var/home/$PAM_USER/host-man-files"
+
+do_mount () {
+    [[ -d "$bind_mount" ]] || mkdir "$bind_mount"
+    mount --bind /usr/share/man "$bind_mount"
+}
+
+findmnt "$bind_mount" || do_mount
