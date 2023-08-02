@@ -39,34 +39,53 @@ let `mkdir tree if absent` =
         ++  `dir name`
         ++  ")"
 
+let seq =
+      \(nel : NonEmpty Text) ->
+        List/foldLeft
+          Text
+          nel.tail
+          Text
+          (\(x : Text) -> \(y : Text) -> x ++ " && " ++ y)
+          nel.head
+
 let `create file if absent` =
       \(`dir name` : Text) ->
       \(`file name` : Text) ->
       \(rest : Text) ->
         let `full name` = `dir name` ++ "/" ++ `file name`
 
-        in      `mkdir tree if absent` `dir name`
-            ++  " && ([[ -f "
+        in
+            seq
+              ( NonEmpty/make
+                Text
+                (`mkdir tree if absent` `dir name`)
+                ["([[ -f "
             ++  `full name`
             ++  " ]] || "
             ++  rest
             ++  "> "
-            ++  `full name`
+            ++  `full name`]
+              )
 
 let in-place =
       \(cmd : Text) ->
       \(`file name` : Text) ->
         let `temp file name` = `file name` ++ ".tmp"
 
-        in      cmd
+        in
+            seq
+              ( NonEmpty/make
+                Text
+                (cmd
             ++  " "
             ++  `file name`
             ++  " > "
-            ++  `temp file name`
-            ++  " && mv "
+            ++  `temp file name`)
+            ["mv "
             ++  `temp file name`
             ++  " "
-            ++  `file name`
+            ++  `file name`]
+              )
 
 let `in-place jq` = \(expr : Text) -> in-place ("jq '" ++ expr ++ "'")
 
@@ -231,15 +250,6 @@ let `check for flathub`
                   }
             }
 
-let seq =
-      \(nel : NonEmpty Text) ->
-        List/foldLeft
-          Text
-          nel.tail
-          Text
-          (\(x : Text) -> \(y : Text) -> x ++ " && " ++ y)
-          nel.head
-
 let `bin directory` = "~/.local/bin"
 
 let shellcheck = `bin directory` ++ "/shellcheck"
@@ -391,7 +401,7 @@ in  { title = "Welcome to my-uBlue"
                           }
                         , { mapKey = "Office"
                           , mapValue =
-                            { description = "Boot your productivity."
+                            { description = "Boost your productivity."
                             , default = False
                             , packages =
                               [ { mapKey = "LibreOffice"
@@ -411,6 +421,9 @@ in  { title = "Welcome to my-uBlue"
                                 }
                               , { mapKey = "Thunderbird Email"
                                 , mapValue = "org.mozilla.Thunderbird"
+                                }
+                              , { mapKey = "Zotero"
+                                , mapValue = "org.zotero.Zotero"
                                 }
                               ]
                             }
@@ -443,6 +456,18 @@ in  { title = "Welcome to my-uBlue"
                           }
                         ]
                       }
+                }
+              , { mapKey = "integrate-zotero-logseq"
+                , mapValue = 
+                    Screen.ConsentScreen
+                      { title = "Integrate Zotero into LogSeq"
+                      , condition.run
+                        = "(flatpak list | grep -F org.zotero.Zotero) && (flatpak list | grep -F com.logseq.Logseq)"
+                      , description =
+                          "We have detected that you have installed both Zotero and LogSeq. We will now integrate Zotero into LogSeq."
+                      , actions =
+                      
+                       }
                 }
               , { mapKey = "z-final-screen"
                 , mapValue =

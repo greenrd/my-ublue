@@ -14,5 +14,5 @@ SEE ALSO
 * $prev_profile profile
 EOF
 
-echo 'session     optional                   pam_exec.so log=/tmp/debug.log /usr/sbin/create-bind-mount' >>$profile_dir/postlogin
+echo 'session     optional                   pam_exec.so /usr/sbin/create-bind-mount' >>$profile_dir/postlogin
 authselect select $profile_name $prev_features
